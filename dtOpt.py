@@ -10,8 +10,8 @@ import graphviz
 raw = pd.read_csv('data/accepts.csv')
 
 raw.drop(['weight'], axis=1, inplace=True)
-y = raw['bad']  # pylint: disable=unsubscriptable-object
-X = raw.drop(['bad'], axis=1)  # pylint: disable=maybe-no-member
+y = raw['bad']
+X = raw.drop(['bad'], axis=1)
 
 le = LabelEncoder()
 col_cat = X.columns[X.dtypes == 'object']

@@ -21,7 +21,7 @@ ch_stat.to_csv('data/chopt_full.csv', encoding='utf-8')
 
 ch_stat.head()
 
-n = ch_stat.shape[0]  # pylint: disable=maybe-no-member
+n = ch_stat.shape[0]
 rng = range(n)
 
 # Pulp 实现
