@@ -1,4 +1,4 @@
-libname dat 'd:\data';
+libname dat 'd:\work\dtOpt\data\';
 
 proc sort data=dat.em_save_train;
 	by _node_;

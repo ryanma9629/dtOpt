@@ -1,4 +1,4 @@
-proc import datafile='d:\data\ch_opt.csv' 
+proc import datafile='d:\work\dtOpt\data\chopt.csv' 
 	dbms=csv out=chinfo replace;
 run;
 
