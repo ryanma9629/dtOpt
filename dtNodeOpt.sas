@@ -21,20 +21,17 @@ data dtnodes;
 		n_good = 1 - bad;
 		n_bad = bad;
 		bad_amt = loan_amt * bad;
+		sum_amt = loan_amt;
 	end;
 	else do;
 		n_good + 1 - bad;
 		n_bad + bad;
 		bad_amt + loan_amt * bad;
+		sum_amt + loan_amt;
 	end;
 	if last._node_ then output;
-	keep _node_ n_good n_bad bad_amt;
+	keep _node_ n_good n_bad bad_amt sum_amt;
 run;
-
-/*proc export data=dtnodes */
-/*	outfile='d:\data\dtnodes.csv'*/
-/*	dbms=csv replace;*/
-/*run;*/
 
 data bad_rate;
 	set dtnodes;
@@ -43,6 +40,11 @@ data bad_rate;
 run;
 
 proc print data=bad_rate;
+run;
+
+proc export data=bad_rate
+	outfile='c:\Users\chnnma\OneDrive - SAS\Customer\浦发\贷前策略优化\dtnodes.csv'
+	dbms=csv replace;
 run;
 
 proc optmodel;

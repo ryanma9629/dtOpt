@@ -7,11 +7,10 @@ from sklearn import tree
 import graphviz
 
 # raw = pd.read_sas('data/accepts.sas7bdat')
-raw = pd.read_csv('data/accepts.csv')
+dat = pd.read_csv('data/accepts.csv')
 
-raw.drop(['weight'], axis=1, inplace=True)
-y = raw['bad']
-X = raw.drop(['bad'], axis=1)
+y = dat['bad']
+X = dat.drop(['bad', 'weight'], axis=1)
 
 le = LabelEncoder()
 col_cat = X.columns[X.dtypes == 'object']
@@ -32,10 +31,10 @@ graph = graphviz.Source(dot_data)
 graph.render('tree', format='png', cleanup=True)
 
 nodes = dtree.apply(X)
-raw['_nodes_'] = nodes
-raw['bad_amt'] = raw['bad'] * raw['loan_amt']
+dat['_nodes_'] = nodes
+dat['bad_amt'] = dat['bad'] * dat['loan_amt']
 
-nodes_agg = raw.groupby('_nodes_').agg(
+nodes_agg = dat.groupby('_nodes_').agg(
     n_samp=('bad', np.size),
     n_bad=('bad', np.sum),
     bad_amt=('bad_amt', np.sum)
@@ -63,10 +62,10 @@ prob += pl.lpSum([nodes_agg.bad_amt[i] * w[j]
 
 prob.writeLP('dt_opt.lp')
 prob.solve(solver)
-print('Status:', pl.LpStatus[prob.status])
 
-wd = {wi.name: wi.value() for wi in w}
-print(wd)
-print('bad rate:', np.dot(nodes_agg.n_bad, list(wd.values()))
-      / np.dot(nodes_agg.n_samp, list(wd.values())))
-print('loss amt:', np.dot(nodes_agg.bad_amt, list(wd.values())))
+if prob.status:
+    wd = {wi.name: wi.value() for wi in w}
+    print(wd)
+    print('bad rate:', np.dot(nodes_agg.n_bad, list(wd.values()))
+        / np.dot(nodes_agg.n_samp, list(wd.values())))
+    print('loss amt:', np.dot(nodes_agg.bad_amt, list(wd.values())))
